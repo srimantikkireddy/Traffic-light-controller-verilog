@@ -1,11 +1,11 @@
 `timescale 1ns / 1ps
 
 module traffic_light_controller_fsm (
-    input wire clk,        // Clock signal
+    input wire clk,        
     input wire rst_n,      // Active-low reset
-    input wire sensor,     // Sensor input
-    output reg [1:0] highway_light,  // Highway traffic light
-    output reg [1:0] farm_light      // Farm road traffic light
+    input wire sensor,    
+    output reg [1:0] highway_light,  
+    output reg [1:0] farm_light     
 );
 
     typedef enum logic [1:0] {
@@ -16,46 +16,46 @@ module traffic_light_controller_fsm (
     } state_t;
 
     state_t state, next_state;
-    reg [4:0] timer; // Timer for 20 clock cycles
+    reg [4:0] timer; 
 
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
-            state <= HGRE_FRED;      // Reset to initial state
+            state <= HGRE_FRED;      
             timer <= 0;
         end else begin
             if (timer > 0) begin
                 timer <= timer - 1;  // Decrement timer
             end else begin
-                state <= next_state; // Move to next state
+                state <= next_state; 
                 timer <= 20;         // Set delay for 20 clock cycles
             end
         end
     end
 
     always @(*) begin
-        highway_light = 2'b11; // Default Red
-        farm_light = 2'b11;    // Default Red
-        next_state = state;    // Default to current state
+        highway_light = 2'b11; 
+        farm_light = 2'b11;    
+        next_state = state;    
 
         case (state)
             HGRE_FRED: begin
                 highway_light = 2'b00; // Green
-                if (sensor) next_state = HYEL_FRED; // Transition to yellow
+                if (sensor) next_state = HYEL_FRED; 
             end
 
             HYEL_FRED: begin
                 highway_light = 2'b01; // Yellow
-                if (timer == 0) next_state = HRED_FGRE; // Transition to red
+                if (timer == 0) next_state = HRED_FGRE; 
             end
 
             HRED_FGRE: begin
                 farm_light = 2'b00;    // Green
-                if (!sensor) next_state = HRED_FYEL; // Transition to yellow
+                if (!sensor) next_state = HRED_FYEL; 
             end
 
             HRED_FYEL: begin
                 farm_light = 2'b01;    // Yellow
-                if (timer == 0) next_state = HGRE_FRED; // Transition to green
+                if (timer == 0) next_state = HGRE_FRED; 
             end
         endcase
     end
