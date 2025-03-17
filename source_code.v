@@ -15,7 +15,7 @@ module traffic_light_controller_fsm (
         HRED_FYEL = 2'b11  // Highway red, farm yellow
     } state_t;
 
-    state_t state, next_state;
+    state_t state = HGRE_FRED, next_state;
     reg [4:0] timer; 
 
     always @(posedge clk or negedge rst_n) begin
