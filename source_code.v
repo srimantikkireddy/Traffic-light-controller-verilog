@@ -50,6 +50,7 @@ module traffic_light_controller_fsm (
 
             HRED_FGRE: begin
                 farm_light = 2'b00;    // Green
+                highway_light = 2'b10; // Red
                 if (!sensor) next_state = HRED_FYEL; 
             end
 
