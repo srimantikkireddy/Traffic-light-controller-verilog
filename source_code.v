@@ -33,8 +33,8 @@ module traffic_light_controller_fsm (
     end
 
     always @(*) begin
-        highway_light = 2'b11; 
-        farm_light = 2'b11;    
+        highway_light = 2'b01; 
+        farm_light = 2'b01;    
         next_state = state;    
 
         case (state)
