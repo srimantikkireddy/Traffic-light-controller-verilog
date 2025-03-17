@@ -32,33 +32,38 @@ module traffic_light_controller_fsm (
         end
     end
 
-    always @(*) begin
-        highway_light = 2'b10; 
-        farm_light = 2'b10;    
-        next_state = state;    
+always @(*) begin
+    next_state = state;  
 
-        case (state)
-            HGRE_FRED: begin
-                highway_light = 2'b00; // Green
-                if (sensor) next_state = HYEL_FRED; 
-            end
+    case (state)
+        HGRE_FRED: begin
+            highway_light = 2'b00; // Green
+            farm_light = 2'b10;    // Red
+            if (sensor) next_state = HYEL_FRED; 
+        end
 
-            HYEL_FRED: begin
-                highway_light = 2'b01; // Yellow
-                if (timer == 0) next_state = HRED_FGRE; 
-            end
+        HYEL_FRED: begin
+            highway_light = 2'b01; // Yellow
+            farm_light = 2'b10;    // Red
+            if (timer == 0) next_state = HRED_FGRE; 
+        end
 
-            HRED_FGRE: begin
-                farm_light = 2'b00;    // Green
-                highway_light = 2'b10; // Red
-                if (!sensor) next_state = HRED_FYEL; 
-            end
+        HRED_FGRE: begin
+            highway_light = 2'b10; // Red
+            farm_light = 2'b00;    // Green
+            if (!sensor) next_state = HRED_FYEL; 
+        end
 
-            HRED_FYEL: begin
-                farm_light = 2'b01;    // Yellow
-                if (timer == 0) next_state = HGRE_FRED; 
-            end
-        endcase
-    end
+        HRED_FYEL: begin
+            highway_light = 2'b10; // Red
+            farm_light = 2'b01;    // Yellow
+            if (timer == 0) next_state = HGRE_FRED; 
+        end
 
+        default: begin
+            highway_light = 2'b10; // Red
+            farm_light = 2'b10;    // Red
+        end
+    endcase
+end
 endmodule
